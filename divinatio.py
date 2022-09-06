@@ -1,5 +1,6 @@
 import argparse
 from os import stat
+import time
 
 parser = argparse.ArgumentParser(
 	description="Code qui génère une liste de mot de passe possible à partir d'info reccuille en OSINT")
@@ -12,6 +13,12 @@ parser.add_argument("-o","--outfile",type=str,default="password.txt",help="Nom d
 parser.add_argument("-v", "--verbosesize",nargs='?', const=True, default=False, help="Affiche la taille du fichier de sortie en temps réel")
 
 args = parser.parse_args()
+
+# Couleur
+vert = ["\x1b[38;5;2m","\x1b[38;5;10m","\x1b[38;5;34m","\x1b[38;5;40m","\x1b[38;5;82m","\x1b[38;5;83m","\x1b[38;5;112m","\x1b[38;5;46m","\x1b[38;5;118m"]
+bleu = ["\x1b[38;5;12m","\x1b[38;5;20m","\x1b[38;5;39m","\x1b[38;5;45m","\x1b[38;5;63m","\x1b[38;5;4m","\x1b[38;5;117m","\x1b[38;5;21m","\x1b[38;5;27m"]
+rouge = ["\x1b[38;5;1m","\x1b[38;5;9m","\x1b[38;5;160m","\x1b[38;5;196m","\x1b[38;5;197m","\x1b[38;5;198m"]
+reset = "\x1b[0m"
 
 def pop_empty(ls):
 	# [''] -> []
@@ -82,10 +89,12 @@ def get_info(conf_file):
 		try:
 			user_data=c.split(str(key) + ":")[1].split('\n')[0]
 			if user_data == "":
-				print("INFO: pas de donné pour",key)
+				print(bleu[0] + "INFO: pas de donné pour " + key + reset)
+				time.sleep(0.5)
 		except:
 			user_data=''
-			print("INFO:",key, "non renseigné")
+			print(bleu[3] + "INFO: " + key + " non renseigné" + reset)
+			time.sleep(0.5)
 		if key in ["CITYNUMBER", "CITYNAME", "NAMEANIMAL", "OTHERPSEUDO","OTHERNAME","IMPORTANTYEARS"]:
 			user_data = user_data.split(",")
 			user_data = pop_empty(user_data)
@@ -100,7 +109,8 @@ def get_info(conf_file):
 								r.append(str(i))
 				user_data = r
 			except:
-				print("MEDIUM ERR: Bad Synthax YEARSINTERVALLE", user_data)
+				print(rouge[4] + "MEDIUM ERR: Bad Synthax YEARSINTERVALLE " + user_data + reset)
+				time.sleep(0.5)
 				user_data=[]
 			user_data = pop_empty(user_data)
 		elif key in ["SPECIALCHAR_END", "SPECIALCHAR_BEGIN", "SPECIALCHAR_MIDDLE"]:
@@ -217,7 +227,7 @@ def get_config(config_file):
 		c=file.read().split("\n")
 		file.close()
 	except:
-		exit("FAIL ERR: Can't find/open divinatio_config.conf (name ",config_file,")")
+		exit(rouge[4] + "FAIL ERR: Can't find/open divinatio_config.conf (name " + config_file +" )" + reset)
 	try:
 		result=[]
 		for line in c:
@@ -229,7 +239,7 @@ def get_config(config_file):
 					else:
 						result.append(sp)
 	except:
-		exit("FAIL ERR: Can't parse the data of divinatio_setting.conf")
+		exit(rouge[4] + "FAIL ERR: Can't parse the data of divinatio_setting.conf" + reset)
 	
 	return result
 
@@ -328,11 +338,11 @@ def save(filename, word):
 	file.close()
 
 def hello_message(end):
-	print("     _ _       _             _   _ ")
+	print(vert[8] + "\n     _ _       _             _   _ ")
 	print("  __| (_)_   _(_)_ __   __ _| |_(_) ___")
 	print(" / _` | \\ \\ / / | '_ \\ / _` | __| |/ _ \\")
 	print("| (_| | |\\ V /| | | | | (_| | |_| | (_) |")
-	print(" \\__,_|_| \\_/ |_|_| |_|\\__,_|\\__|_|\\___/\n")
+	print(" \\__,_|_| \\_/ |_|_| |_|\\__,_|\\__|_|\\___/\n\n",reset)
 	try:
 		nb = round(int(end) * 0.000013, 6)
 		print(nb, "Mo")
@@ -348,29 +358,37 @@ if __name__=="__main__":
 		out_file = str(args.outfile)
 		init_save(out_file)
 	except:
-		exit("SLIGHT ERR: -o must be a string and a correct name")
+		exit(rouge[1] + "SLIGHT ERR: -o must be a string and a correct name" + reset)
 
 
 	if args.end != None:
 		try:
 			end_nb = int(args.end)
-			print(f"INFO: Arrêt après génération de {end_nb} mot de passe")
+			print(vert[0] + f"INFO: Arrêt après génération de {end_nb} mot de passe" + reset)
+			time.sleep(0.5)
 		except:
-			exit("SLIGHT ERR: -e must be a integer")
+			exit(rouge[1] + "SLIGHT ERR: -e must be a integer" + reset)
 	else:
 		end_nb = None
 
 	if args.endsize != None:
 		try:
 			end_size = float(args.endsize)
-			print(f"INFO: Arrêt après que out_put_file >{end_size} Mo")
+			print(vert[0] + f"INFO: Arrêt après que out_put_file >{end_size} Mo" + reset)
+			time.sleep(0.5)
 		except:
-			exit("SLIGHT ERR: -es must be a float")
+			exit(rouge[1] + "SLIGHT ERR: -es must be a float" + reset)
 	else:
 		end_size = None
 
+	if end_nb == None and end_size == None:
+		print(rouge[4] + "ERR: Tu dois définir un limitateur soit en fonction de la taille du fichier de mot de passe (-es) soit en fonction du nombre de mot de passe générés (-e)" + reset)
+		time.sleep(0.5)
+		end_nb = 10
+
 	# Génération selon le fichier divinatio_config
-	print("INFO: Génération selon le fichier", args.filesystem)
+	print("\n--- Génération selon le fichier " + args.filesystem + " ---")
+	time.sleep(0.5)
 	conf=get_config(args.filesystem)
 	font = ['1']
 	result = []
@@ -378,11 +396,11 @@ if __name__=="__main__":
 	for form in conf:
 		if end_nb != None and tt >= end_nb:
 			space = " "*100
-			exit(f"END{space}")
+			exit(vert[5] + f"END{space}" + reset)
 		if end_size != None:
 			if int(get_size(out_file)*100) > int(end_size*100):
 				space = " "*100
-				exit(f"END{space}")	
+				exit(vert[5] + f"END{space}" + reset)	
 		if form[0] == 'f':
 			font = form[1]
 		else:
@@ -402,13 +420,17 @@ if __name__=="__main__":
 	#print(result)
 	
 	# Génération brute force (une fois que divinatio_config est fini)
-	print("INFO: Génération Brute Force")
+	print("\n--- Génération Brute Force ---")
 	l = [-1]
 	char = list("azertyuuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890&é\"\\'(-è_çà)=~#{[|`^ @]^}$£ê*ù%!§:/;.,?")
 	while True:
 		if end_nb != None and tt >= end_nb:
 			space = " "*100
-			exit(f"END{space}")
+			exit(vert[5] + f"END{space}" + reset)
+		if end_size != None:
+			if int(get_size(out_file)*100) > int(end_size*100):
+				space = " "*100
+				exit(vert[5] + f"END{space}" + reset)
 		l[0] = l[0] + 1
 		for i in range(len(l)):
 			if l[i] >= len(char):
@@ -424,7 +446,10 @@ if __name__=="__main__":
 			result.append(r)
 			save(out_file,r)
 			tt += 1
-			print(tt,end="\r")
+			if args.verbosesize or end_size != None:
+				print(tt,get_size(out_file),"Mo", end='\r')
+			else:
+				print(tt,end="\r")
 
 	process(dico,conf[1],['1','2','3'])
 	

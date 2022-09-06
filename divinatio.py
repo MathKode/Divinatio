@@ -20,6 +20,9 @@ bleu = ["\x1b[38;5;12m","\x1b[38;5;20m","\x1b[38;5;39m","\x1b[38;5;45m","\x1b[38
 rouge = ["\x1b[38;5;1m","\x1b[38;5;9m","\x1b[38;5;160m","\x1b[38;5;196m","\x1b[38;5;197m","\x1b[38;5;198m"]
 reset = "\x1b[0m"
 
+# Time wait (à chaque print attendre pour que l'utilisateur lise l'info)
+time_wait = 0.2
+
 def pop_empty(ls):
 	# [''] -> []
 	r=[]
@@ -90,11 +93,11 @@ def get_info(conf_file):
 			user_data=c.split(str(key) + ":")[1].split('\n')[0]
 			if user_data == "":
 				print(bleu[0] + "INFO: pas de donné pour " + key + reset)
-				time.sleep(0.5)
+				time.sleep(time_wait)
 		except:
 			user_data=''
 			print(bleu[3] + "INFO: " + key + " non renseigné" + reset)
-			time.sleep(0.5)
+			time.sleep(time_wait)
 		if key in ["CITYNUMBER", "CITYNAME", "NAMEANIMAL", "OTHERPSEUDO","OTHERNAME","IMPORTANTYEARS"]:
 			user_data = user_data.split(",")
 			user_data = pop_empty(user_data)
@@ -342,17 +345,24 @@ def hello_message(end):
 	print("  __| (_)_   _(_)_ __   __ _| |_(_) ___")
 	print(" / _` | \\ \\ / / | '_ \\ / _` | __| |/ _ \\")
 	print("| (_| | |\\ V /| | | | | (_| | |_| | (_) |")
-	print(" \\__,_|_| \\_/ |_|_| |_|\\__,_|\\__|_|\\___/\n\n",reset)
+	print(" \\__,_|_| \\_/ |_|_| |_|\\__,_|\\__|_|\\___/\n" + vert[1] +"                               BiMathAx\n" + reset)
 	try:
 		nb = round(int(end) * 0.000013, 6)
 		print(nb, "Mo")
 	except:pass
 
-
 if __name__=="__main__":
 	hello_message(args.end)
 
 	dico = get_info(str(args.file))
+	try:
+		min_len = int(dico["MINLEN"])
+	except:
+		min_len = 0
+	try:
+		max_len = int(dico["MAXLEN"])
+	except:
+		max_len = 1000
 
 	try:
 		out_file = str(args.outfile)
@@ -365,7 +375,7 @@ if __name__=="__main__":
 		try:
 			end_nb = int(args.end)
 			print(vert[0] + f"INFO: Arrêt après génération de {end_nb} mot de passe" + reset)
-			time.sleep(0.5)
+			time.sleep(time_wait)
 		except:
 			exit(rouge[1] + "SLIGHT ERR: -e must be a integer" + reset)
 	else:
@@ -375,7 +385,7 @@ if __name__=="__main__":
 		try:
 			end_size = float(args.endsize)
 			print(vert[0] + f"INFO: Arrêt après que out_put_file >{end_size} Mo" + reset)
-			time.sleep(0.5)
+			time.sleep(time_wait)
 		except:
 			exit(rouge[1] + "SLIGHT ERR: -es must be a float" + reset)
 	else:
@@ -383,12 +393,12 @@ if __name__=="__main__":
 
 	if end_nb == None and end_size == None:
 		print(rouge[4] + "ERR: Tu dois définir un limitateur soit en fonction de la taille du fichier de mot de passe (-es) soit en fonction du nombre de mot de passe générés (-e)" + reset)
-		time.sleep(0.5)
+		time.sleep(time_wait)
 		end_nb = 10
 
 	# Génération selon le fichier divinatio_config
 	print("\n--- Génération selon le fichier " + args.filesystem + " ---")
-	time.sleep(0.5)
+	time.sleep(time_wait)
 	conf=get_config(args.filesystem)
 	font = ['1']
 	result = []
@@ -407,14 +417,15 @@ if __name__=="__main__":
 			try:
 				mp = process(dico, form, font)
 				for i in mp:
-					if i not in result:
-						result.append(i)
-						save(out_file,i)
-						tt+=1
-						if args.verbosesize or end_size != None:
-							print(tt,get_size(out_file),"Mo", end='\r')
-						else:
-							print(tt,end="\r")
+					if len(i) <= max_len and len(i) >= min_len:
+						if i not in result:
+							result.append(i)
+							save(out_file,i)
+							tt+=1
+							if args.verbosesize or end_size != None:
+								print(tt,get_size(out_file),"Mo", end='\r')
+							else:
+								print(tt,end="\r")
 			except:
 				pass
 	#print(result)
@@ -442,14 +453,15 @@ if __name__=="__main__":
 		r = ""
 		for i in l:
 			r += char[i]
-		if r not in result:
-			result.append(r)
-			save(out_file,r)
-			tt += 1
-			if args.verbosesize or end_size != None:
-				print(tt,get_size(out_file),"Mo", end='\r')
-			else:
-				print(tt,end="\r")
+		if len(r) <= max_len and len(r) >= min_len:
+			if r not in result:
+				result.append(r)
+				save(out_file,r)
+				tt += 1
+				if args.verbosesize or end_size != None:
+					print(tt,get_size(out_file),"Mo", end='\r')
+				else:
+					print(tt,end="\r")
 
 	process(dico,conf[1],['1','2','3'])
 	

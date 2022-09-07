@@ -9,11 +9,11 @@ rouge = ["\x1b[38;5;1m","\x1b[38;5;9m","\x1b[38;5;160m","\x1b[38;5;196m","\x1b[3
 reset = "\x1b[0m"
 
 parser = argparse.ArgumentParser(
-	description=f"{bleu[3]}Code qui génère une liste de mot de passe possible à partir d'info reccuille en OSINT{reset}")
+	description=f"{bleu[3]}Code qui génère une liste de mot de passe plausible à partir d'informations recueillies en OSINT{reset}")
 
-parser.add_argument("-f","--file",type=str,default="information_sheet.conf",help=f"Fichier de configuration personnalisé (information_sheet.conf)")
-parser.add_argument("-fs","--filesystem",type=str,default="password_template.conf",help="Fichier déclarant les moules de génération de mot de passe (password_template.conf)")
-parser.add_argument("-e","--end",type=str,default=None,help="Nombre de mot de passe avant l'arret du script (^C si non précisé)")
+parser.add_argument("-f","--file",type=str,default="information_sheet.conf",help=f"Fichier de renseignement sur la personne (information_sheet.conf)")
+parser.add_argument("-fs","--filesystem",type=str,default="password_template.conf",help="Fichier déclarant les modèles de génération de mot de passe (password_template.conf)")
+parser.add_argument("-e","--end",type=str,default=None,help="Nombre de mot de passe avant l'arrêt du script")
 parser.add_argument("-es","--endsize",type=str,default=None,help="Taille du fichier final à atteindre avant l'arrêt du script")
 parser.add_argument("-o","--outfile",type=str,default="password.txt",help="Nom du fichier de sortie (word list)")
 parser.add_argument("-v", "--verbosesize",nargs='?', const=True, default=False, help="Affiche la taille du fichier de sortie en temps réel")
@@ -92,11 +92,11 @@ def get_info(conf_file):
 		try:
 			user_data=c.split(str(key) + ":")[1].split('\n')[0]
 			if user_data == "":
-				print(bleu[0] + "INFO: pas de donné pour " + key + reset)
+				print(bleu[0] + "INFO: pas de donnée pour " + key + reset)
 				time.sleep(time_wait)
 		except:
 			user_data=''
-			print(bleu[3] + "INFO: " + key + " non renseigné" + reset)
+			print(bleu[3] + "INFO: " + key + " non renseignée" + reset)
 			time.sleep(time_wait)
 		if key in ["CITYNUMBER", "CITYNAME", "NAMEANIMAL", "OTHERPSEUDO","OTHERNAME","IMPORTANTYEARS"]:
 			user_data = user_data.split(",")
@@ -230,7 +230,7 @@ def get_config(config_file):
 		c=file.read().split("\n")
 		file.close()
 	except:
-		exit(rouge[4] + "FAIL ERR: Can't find/open password_template.conf (name " + config_file +" )" + reset)
+		exit(rouge[4] + "FAIL ERR: Ne parvient pas à ouvrir le fichier password_template.conf (name " + config_file +" )" + reset)
 	try:
 		result=[]
 		for line in c:
@@ -242,7 +242,7 @@ def get_config(config_file):
 					else:
 						result.append(sp)
 	except:
-		exit(rouge[4] + "FAIL ERR: Can't parse the data of information_sheet.conf" + reset)
+		exit(rouge[4] + "FAIL ERR: Ne parvient pas à lire le fichier password_template.conf" + reset)
 	
 	return result
 
@@ -368,7 +368,7 @@ if __name__=="__main__":
 		out_file = str(args.outfile)
 		init_save(out_file)
 	except:
-		exit(rouge[1] + "SLIGHT ERR: -o must be a string and a correct name" + reset)
+		exit(rouge[1] + "SLIGHT ERR: -o doit être suivi d'un nom correct" + reset)
 
 
 	if args.end != None:
@@ -392,7 +392,7 @@ if __name__=="__main__":
 		end_size = None
 
 	if end_nb == None and end_size == None:
-		print(rouge[4] + "ERR: Tu dois définir un limitateur soit en fonction de la taille du fichier de mot de passe (-es) soit en fonction du nombre de mot de passe générés (-e)" + reset)
+		print(rouge[4] + "ERR: Tu dois définir un limitateur\n    |- Soit en fonction de la taille du fichier de mot de passe (-es)\n    |- Soit en fonction du nombre de mot de passe générés (-e)" + reset)
 		time.sleep(time_wait)
 		end_nb = 10
 

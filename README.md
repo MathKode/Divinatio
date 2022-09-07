@@ -1,5 +1,8 @@
 # Divinatio
 
+![Python 3.9](https://img.shields.io/badge/Python-3.9-green.svg)
+![Version](https://img.shields.io/badge/Version-0.3-blue)
+
 <img src="illustration/img1.png">
 
 Divinatio est un outil permettant de créer des listes de mots de passe plausibles en fonction d'informations sur une personne (nom, prénom, animaux de compagnies...).

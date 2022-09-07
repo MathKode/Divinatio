@@ -1,7 +1,7 @@
 # Divinatio
 
 ![Python 3.9](https://img.shields.io/badge/Python-3.9-green.svg)
-![Version](https://img.shields.io/badge/Version-0.3-blue)
+![Version](https://img.shields.io/badge/Version-0.4-blue)
 
 <img src="illustration/img1.png">
 
@@ -96,6 +96,12 @@ Arrête le code une fois que le fichier final a une taille > **<Mo>**
 python3 divinatio.py -es 0.5
 ```
 
+- ```-et```
+Arrête le code une fois que toutes les combinaisons de mot de passe du fichier password_template.config ont été réalisées
+
+```
+python3 divinatio.py -et -fs other_template/form1.conf
+```
 ## Créer son propre information\_sheet.conf
 
 *Pour rappel, ce fichier correspond à une fiche de renseignement sur la personne dont on cherche à casser le mot de passe...*

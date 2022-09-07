@@ -1,5 +1,6 @@
 # Divinatio
 Divinatio est un outil permettant de créer des listes de mot de passe plausible en fonction des informations sur une personne (nom, prénom, animaux de companies...).
+
 *Par exemple : cette liste de mot de passe peut être utilisée par john-the-ripper pour cracker un hash ```john --wordlist="password.txt" --type=crypt unshadowed.txt```*
 
 ## Pourquoi Divinatio ?
@@ -24,7 +25,7 @@ Ainsi pour une **utilisation très simple** vous devez remplir le fichier ```inf
 
 *En effet, Divinatio génère une infinité de mot de passe ! Il commence avec les modèles du fichier ```password_template.conf``` puis enchaîne avec un brute-force classique... Il n'y a donc pas de fin !*
 
-Définir un arrêt, une fin à la génération de mot de passe peut se faire de 2 manières :
+**Définir un arrêt**, une fin à la génération de mot de passe peut se faire de 2 manières :
 - ```-e <NB>``` : s'arrête une fois que le code à généré **<NB>** mot de passe
 - ```-es <Mo>``` : s'arrête une fois que le fichier final a une taille > **<Mo>**
 
@@ -36,7 +37,7 @@ python3 divinatio.py -e 20000
 
 ## Les Arguments
 
-Divinatio possède plusieurs arguments que vous pouvez afficher via ```python3 divinatio.py --help``̀ . Nous allons ici détailler leur fonction :
+Divinatio possède plusieurs arguments que vous pouvez afficher via ```python3 divinatio.py --help```. Nous allons ici détailler leur fonction :
 
 - ```-f <name>```
 Si vous voulez créer vos propres fiches de renseignement (et ne pas utiliser ```information_sheet.conf```), vous devez les spécifier via cette commande. Exemple :
@@ -66,11 +67,25 @@ Cet argument de verbose permet d'afficher la taille du fichier de sorti en temps
 python3 divinatio.py -es 0.3 -v
 ```
 
+- ```-e <NB>```
+Arrête le code une fois que **<NB>** mot de passe ont été généré.
+
+```
+python3 divinatio.py -e 100
+```
+
+- ```-es <Mo>```
+Arrête le code une fois que le fichier final a une taille > **<Mo>**
+
+```
+python3 divinatio.py -es 0.5
+```
+
 ## Créer son propre information\_sheet.conf
 
 *Pour rappel, ce fichier correspond à une fiche de renseignement sur la personne dont on cherche à casser le mot de passe...*
 
-- Pourquoi créer sa propre ``information\_sheet.conf`` 
+- Pourquoi créer sa propre ``information_sheet.conf`` 
 
 Savoir créer des fiches de renseignement peut être très utils si vous devez générer des listes de mot de passe pour de nombreuses personnes... Par exemple : plutôt que réécrire à chaque fois le fichier ```information_sheet.conf```, il est plus simple d'avoir un fichier pour chaque personne (``mike.conf``, ``theo.conf``, ``julien.conf``...)
 

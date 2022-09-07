@@ -6,6 +6,15 @@ Divinatio est un outil permettant de créer des listes de mots de passe plausibl
 
 *Par exemple : cette liste de mot de passe peut être utilisée par john-the-ripper pour cracker un hash ```john --wordlist="password.txt" --type=crypt unshadowed.txt```*
 
+## Téléchargement
+
+```
+git clone https://github.com/MathKode/Divinatio.git
+```
+```
+python3 divinatio.py -h
+```
+
 ## Pourquoi Divinatio ?
 
 Pourquoi utiliser divinatio et pas rockyou comme liste de mot de passe ?

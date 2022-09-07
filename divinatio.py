@@ -2,23 +2,23 @@ import argparse
 from os import stat
 import time
 
-parser = argparse.ArgumentParser(
-	description="Code qui génère une liste de mot de passe possible à partir d'info reccuille en OSINT")
+# Couleur
+vert = ["\x1b[38;5;2m","\x1b[38;5;10m","\x1b[38;5;34m","\x1b[38;5;40m","\x1b[38;5;82m","\x1b[38;5;83m","\x1b[38;5;112m","\x1b[38;5;46m","\x1b[38;5;118m"]
+bleu = ["\x1b[38;5;12m","\x1b[38;5;20m","\x1b[38;5;39m","\x1b[38;5;45m","\x1b[38;5;63m","\x1b[38;5;4m","\x1b[38;5;117m","\x1b[38;5;21m","\x1b[38;5;27m"]
+rouge = ["\x1b[38;5;1m","\x1b[38;5;9m","\x1b[38;5;160m","\x1b[38;5;196m","\x1b[38;5;197m","\x1b[38;5;198m"]
+reset = "\x1b[0m"
 
-parser.add_argument("-f","--file",type=str,default="divinatio_setting.conf",help="Fichier de configuration personnalisé (divinatio_setting.conf)")
-parser.add_argument("-fs","--filesystem",type=str,default="divinatio_config.conf",help="Fichier déclarant les moules de génération de mot de passe (divinatio_config.conf)")
+parser = argparse.ArgumentParser(
+	description=f"{bleu[3]}Code qui génère une liste de mot de passe possible à partir d'info reccuille en OSINT{reset}")
+
+parser.add_argument("-f","--file",type=str,default="information_sheet.conf",help=f"Fichier de configuration personnalisé (information_sheet.conf)")
+parser.add_argument("-fs","--filesystem",type=str,default="password_template.conf",help="Fichier déclarant les moules de génération de mot de passe (password_template.conf)")
 parser.add_argument("-e","--end",type=str,default=None,help="Nombre de mot de passe avant l'arret du script (^C si non précisé)")
 parser.add_argument("-es","--endsize",type=str,default=None,help="Taille du fichier final à atteindre avant l'arrêt du script")
 parser.add_argument("-o","--outfile",type=str,default="password.txt",help="Nom du fichier de sortie (word list)")
 parser.add_argument("-v", "--verbosesize",nargs='?', const=True, default=False, help="Affiche la taille du fichier de sortie en temps réel")
 
 args = parser.parse_args()
-
-# Couleur
-vert = ["\x1b[38;5;2m","\x1b[38;5;10m","\x1b[38;5;34m","\x1b[38;5;40m","\x1b[38;5;82m","\x1b[38;5;83m","\x1b[38;5;112m","\x1b[38;5;46m","\x1b[38;5;118m"]
-bleu = ["\x1b[38;5;12m","\x1b[38;5;20m","\x1b[38;5;39m","\x1b[38;5;45m","\x1b[38;5;63m","\x1b[38;5;4m","\x1b[38;5;117m","\x1b[38;5;21m","\x1b[38;5;27m"]
-rouge = ["\x1b[38;5;1m","\x1b[38;5;9m","\x1b[38;5;160m","\x1b[38;5;196m","\x1b[38;5;197m","\x1b[38;5;198m"]
-reset = "\x1b[0m"
 
 # Time wait (à chaque print attendre pour que l'utilisateur lise l'info)
 time_wait = 0.2
@@ -54,7 +54,7 @@ def get_info(conf_file):
 		c = file.read().split("\n")
 		file.close()
 	except:
-		exit(f"FAIL ERR: Loading divinatio_setting.conf ({conf_file})")
+		exit(f"FAIL ERR: Loading information_sheet.conf ({conf_file})")
 	try:
 		#Delete commentaire:
 		c2 = []
@@ -224,13 +224,13 @@ def special_style(word, special_char):
 
 
 def get_config(config_file):
-	#divinatio_config.conf
+	#password_template.conf
 	try:
 		file=open(str(config_file),"r")
 		c=file.read().split("\n")
 		file.close()
 	except:
-		exit(rouge[4] + "FAIL ERR: Can't find/open divinatio_config.conf (name " + config_file +" )" + reset)
+		exit(rouge[4] + "FAIL ERR: Can't find/open password_template.conf (name " + config_file +" )" + reset)
 	try:
 		result=[]
 		for line in c:
@@ -242,7 +242,7 @@ def get_config(config_file):
 					else:
 						result.append(sp)
 	except:
-		exit(rouge[4] + "FAIL ERR: Can't parse the data of divinatio_setting.conf" + reset)
+		exit(rouge[4] + "FAIL ERR: Can't parse the data of information_sheet.conf" + reset)
 	
 	return result
 
@@ -396,7 +396,7 @@ if __name__=="__main__":
 		time.sleep(time_wait)
 		end_nb = 10
 
-	# Génération selon le fichier divinatio_config
+	# Génération selon le fichier password_template
 	print("\n--- Génération selon le fichier " + args.filesystem + " ---")
 	time.sleep(time_wait)
 	conf=get_config(args.filesystem)
@@ -430,7 +430,7 @@ if __name__=="__main__":
 				pass
 	#print(result)
 	
-	# Génération brute force (une fois que divinatio_config est fini)
+	# Génération brute force (une fois que password_template est fini)
 	print("\n--- Génération Brute Force ---")
 	l = [-1]
 	char = list("azertyuuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890&é\"\\'(-è_çà)=~#{[|`^ @]^}$£ê*ù%!§:/;.,?")

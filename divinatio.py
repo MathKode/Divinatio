@@ -15,6 +15,7 @@ parser.add_argument("-f","--file",type=str,default="information_sheet.conf",help
 parser.add_argument("-fs","--filesystem",type=str,default="password_template.conf",help="Fichier déclarant les modèles de génération de mot de passe (password_template.conf)")
 parser.add_argument("-e","--end",type=str,default=None,help="Nombre de mot de passe avant l'arrêt du script")
 parser.add_argument("-es","--endsize",type=str,default=None,help="Taille du fichier final à atteindre avant l'arrêt du script")
+parser.add_argument("-et", "--endtemplate",nargs='?', const=True, default=False, help="Arrête le code une fois le fichier password_template.conf fini")
 parser.add_argument("-o","--outfile",type=str,default="password.txt",help="Nom du fichier de sortie (word list)")
 parser.add_argument("-v", "--verbosesize",nargs='?', const=True, default=False, help="Affiche la taille du fichier de sortie en temps réel")
 
@@ -391,7 +392,7 @@ if __name__=="__main__":
 	else:
 		end_size = None
 
-	if end_nb == None and end_size == None:
+	if end_nb == None and end_size == None and args.endtemplate == False:
 		print(rouge[4] + "ERR: Tu dois définir un limitateur\n    |- Soit en fonction de la taille du fichier de mot de passe (-es)\n    |- Soit en fonction du nombre de mot de passe générés (-e)" + reset)
 		time.sleep(time_wait)
 		end_nb = 10
@@ -431,6 +432,8 @@ if __name__=="__main__":
 	#print(result)
 	
 	# Génération brute force (une fois que password_template est fini)
+	if args.endtemplate:
+		exit(f"{vert[5]}END{reset}")
 	print("\n--- Génération Brute Force ---")
 	l = [-1]
 	char = list("azertyuuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890&é\"\\'(-è_çà)=~#{[|`^ @]^}$£ê*ù%!§:/;.,?")

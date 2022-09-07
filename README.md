@@ -2,7 +2,7 @@
 
 <img src="illustration/img1.png">
 
-Divinatio est un outil permettant de créer des listes de mots de passe plausibles en fonction d'informations sur une personne (nom, prénom, animaux de companies...).
+Divinatio est un outil permettant de créer des listes de mots de passe plausibles en fonction d'informations sur une personne (nom, prénom, animaux de compagnies...).
 
 *Par exemple : cette liste de mot de passe peut être utilisée par john-the-ripper pour cracker un hash ```john --wordlist="password.txt" --type=crypt unshadowed.txt```*
 
@@ -12,24 +12,24 @@ Pourquoi utiliser divinatio et pas rockyou comme liste de mot de passe ?
 - Divinatio est 100% personnalisable
 - Les mots de passe générés sont beaucoup plus cohérent que rockyou
 
-*En effet, si la personne se nomme Elias alors tous les mot de passe contenant John sont inutile... Soit 18 729 mot de passe rockyou inutil...*
+*En effet, si la personne se nomme Elias alors tous les mots de passe contenant John sont inutiles... Soit 18 729 mots de passe rockyou inutiles...*
 
-- Cela vous fait gagner du temps (comparer a des list déjà toutes faites mais non ciblées)
-- Vous utilisez les données receuillies en OSINT
+- Cela vous fait gagner du temps (comparer a des listes déjà toutes faites mais non ciblées)
+- Vous utilisez les données recueillies en OSINT
 
 ## Comment fonctionne Divinatio
 
 Le fonctionnement *basique* de Divinatio est très simple et se base sur 3 fichiers :
 - ```divinatio.py``` : code principal permettant la génération des passwords
 - ```information_sheet.conf``` : feuille de renseignement sur la personne (*c'est ici où l'on définit le nom/prénom/naissance/animaux/villes...*)
-- ```password_template.conf``` : modèle définissant l'ordre de génération des mot de passe (*Par exemple, on génère d'abord les variantes du prénom, puis du nom, puis du prénom et du nom, puis on ajoute l'année de naissance...*)
+- ```password_template.conf``` : modèle définissant l'ordre de génération des mots de passe (*Par exemple, on génère d'abord les variantes du prénom, puis du nom, puis du prénom et du nom, puis on ajoute l'année de naissance...*)
 
-Ainsi pour une **utilisation très simple** vous devez remplir le fichier ```information_sheet.conf``` avec les infos trouvées sur la personne. Puis vous executez le code en définissant une ```fin``` (appelée *end*).
+Ainsi pour une **utilisation très simple** vous devez remplir le fichier ```information_sheet.conf``` avec les informations trouvées sur la personne. Puis vous exécutez le code en définissant une ```fin``` (appelée *end*).
 
 *En effet, Divinatio génère une infinité de mot de passe ! Il commence avec les modèles du fichier ```password_template.conf``` puis enchaîne avec un brute-force classique... Il n'y a donc pas de fin !*
 
 **Définir un arrêt**, une fin à la génération de mot de passe peut se faire de 2 manières :
-- ```-e <NB>``` : s'arrête une fois que le code à généré **<NB>** mot de passe
+- ```-e <NB>``` : s'arrête une fois que le code a généré **<NB>** mot de passe
 - ```-es <Mo>``` : s'arrête une fois que le fichier final a une taille > **<Mo>**
 
 Ainsi, une fois que vous avez configuré ```information_sheet.conf``` et que vous voulez arrêter le script après la génération de 20 000 mot de passe, il faut entrer la commande :
@@ -90,11 +90,11 @@ python3 divinatio.py -es 0.5
 
 - Pourquoi créer sa propre ``information_sheet.conf`` 
 
-Savoir créer des fiches de renseignement peut être très utils si vous devez générer des listes de mot de passe pour de nombreuses personnes... Par exemple : plutôt que réécrire à chaque fois le fichier ```information_sheet.conf```, il est plus simple d'avoir un fichier pour chaque personne (``mike.conf``, ``theo.conf``, ``julien.conf``...)
+Savoir créer des fiches de renseignement peut être très utile si vous devez générer des listes de mots de passe pour de nombreuses personnes... Par exemple : plutôt que réécrire à chaque fois le fichier ```information_sheet.conf```, il est plus simple d'avoir un fichier pour chaque personne (``mike.conf``, ``theo.conf``, ``julien.conf``...)
 
-- Synthax
+- Syntaxe
 
-La synthax pour créer une fiche est très très simple car il n'y a que 2 types lignes !
+La syntaxe pour créer une fiche est très simple car il n'y a que 2 types lignes !
 
 **Les Commentaires** : qui sont ignorés lors de l'analyse du fichier par divinatio.py
 
@@ -104,7 +104,7 @@ La synthax pour créer une fiche est très très simple car il n'y a que 2 types
 #
 ```
 
-**Les Renseignements** : correspondant à des *tag* signalant à divinatio.py qu'il s'agit d'une information sur la personne. 
+**Les Renseignements** : correspondant à des *tags* signalant à divinatio.py qu'il s'agit d'une information sur la personne. 
 
 ```
 NAME
@@ -140,10 +140,10 @@ OTHERPSEUDO:zefus,miki
 
 ## Créer son propre modèle de mot de passe
 
-Le fichier ```password_template.conf``` possède lui aussi une synthax particulièrement simple composé de 3 éléments :
+Le fichier ```password_template.conf``` possède lui aussi une syntaxe particulièrement simple composé de 3 éléments :
 
-- Commentaires : ce sont des lignes ignorées lors de l'éxecution de divinatio.py (soit # - [ESPACE] [TABULATION])
-- Modèles : composé du nom de l'information (voir la liste plus)
+- Commentaires : ce sont des lignes ignorées lors de l'exécution de divinatio.py (soit # - [ESPACE] [TABULATION])
+- Modèles : composés du nom de l'information (voir la liste plus haut)
 
 Entre chaque terme, il faut mettre un double point (:). Par exemple, si on veut le prénom suivit du nom, cela donne ```NAME:LASTNAME```
 
@@ -161,10 +161,10 @@ Type 5 : mINFIRST
 Type 6 : All posibility
 ```
 
-Voici un exemple de fichier modèl personnalisé pour ne faire que des mots de passe MAJUSCULE et dernière lettrE avec le nom et le prénom :
+Voici un exemple de fichier modèle personnalisé pour ne faire que des mots de passe MAJUSCULE et dernière lettrE avec le nom et le prénom :
 
 ```
-#Mon fichier de modèl
+#Mon fichier de modèle
 -Ceci aussi est un commentaire
 FONT_STYLE:1,4
 NAME

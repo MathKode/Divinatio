@@ -1,5 +1,8 @@
 # Divinatio
-Divinatio est un outil permettant de créer des listes de mot de passe plausible en fonction des informations sur une personne (nom, prénom, animaux de companies...).
+
+<img src="illustration/img1.png">
+
+Divinatio est un outil permettant de créer des listes de mots de passe plausibles en fonction d'informations sur une personne (nom, prénom, animaux de companies...).
 
 *Par exemple : cette liste de mot de passe peut être utilisée par john-the-ripper pour cracker un hash ```john --wordlist="password.txt" --type=crypt unshadowed.txt```*
 
